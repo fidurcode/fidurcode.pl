@@ -19,7 +19,7 @@ jobs:
         run: npm i --legacy-peer-deps
 
       - name: Lint code
-        run: npm run lint
+        run: ng lint
 
       - name: FidurCode Build
         run: npm run build-prod

@@ -40,11 +40,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm i --legacy-peer-deps
-
-      - name: Persist node_modules
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: cp -r node_modules $HOME/node_modules
+        run: npm ci --legacy-peer-deps
 
   test:
     runs-on: ubuntu-latest
@@ -58,8 +54,14 @@ jobs:
         with:
           node-version: 20.9.0
 
-      - name: Restore node_modules
-        run: cp -r $HOME/node_modules ./node_modules
+      - name: Cache Node.js modules
+        id: cache-node-modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Test code
         run: npm test
@@ -76,8 +78,14 @@ jobs:
         with:
           node-version: 20.9.0
 
-      - name: Restore node_modules
-        run: cp -r $HOME/node_modules ./node_modules
+      - name: Cache Node.js modules
+        id: cache-node-modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Build project
         run: npm run build-dev

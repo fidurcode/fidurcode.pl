@@ -70,7 +70,7 @@ jobs:
           node-version: 20.9.0
 
       - name: Test code
-        run: npm test
+        run: npm run test
 
   build:
     runs-on: ubuntu-latest

@@ -20,18 +20,51 @@ jobs:
 
   install:
     runs-on: ubuntu-latest
+    needs: config
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.9.0
+
       - name: Install dependencies
         run: npm i --legacy-peer-deps
 
   test:
     runs-on: ubuntu-latest
+    needs: install
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.9.0
+
+      - name: Install dependencies
+        run: npm i --legacy-peer-deps
+
       - name: Test code
         run: npm test
 
   build:
     runs-on: ubuntu-latest
+    needs: test
     steps:
-      - name: FidurCode Build-DEV
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.9.0
+
+      - name: Install dependencies
+        run: npm i --legacy-peer-deps
+
+      - name: Build project
         run: npm run build-dev

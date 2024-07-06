@@ -13,14 +13,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Cache Node.js modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Configure node
         uses: actions/setup-node@v4
         with:
@@ -33,7 +25,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Configure node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.9.0
+
       - name: Cache Node.js modules
+        id: cache-node-modules
         uses: actions/cache@v3
         with:
           path: ~/.npm
@@ -41,13 +39,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Configure node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.9.0
-
       - name: Install dependencies
         run: npm i --legacy-peer-deps
+
+      - name: Persist node_modules
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: cp -r node_modules $HOME/node_modules
 
   test:
     runs-on: ubuntu-latest
@@ -56,21 +53,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Cache Node.js modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Configure node
         uses: actions/setup-node@v4
         with:
           node-version: 20.9.0
-#      @TODO - Po testach usunac instalacje zaleznosci.
-      - name: Install dependencies
-        run: npm i --legacy-peer-deps
+
+      - name: Restore node_modules
+        run: cp -r $HOME/node_modules ./node_modules
 
       - name: Test code
         run: npm test
@@ -82,18 +71,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Cache Node.js modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Configure node
         uses: actions/setup-node@v4
         with:
           node-version: 20.9.0
+
+      - name: Restore node_modules
+        run: cp -r $HOME/node_modules ./node_modules
 
       - name: Build project
         run: npm run build-dev

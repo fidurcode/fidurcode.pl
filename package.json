@@ -8,7 +8,7 @@
     "build-stage": "ng build --configuration stage",
     "build-prod": "ng build --configuration production",
     "lint": "ng lint",
-    "test": "ng test"
+    "test": "ng test --source-map=false --browsers=ChromeHeadless --watch=false"
   },
   "private": true,
   "dependencies": {

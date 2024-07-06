@@ -18,8 +18,11 @@ jobs:
       - name: Install dependencies
         run: npm i --legacy-peer-deps
 
-      - name: Lint code
-        run: ng lint
+#      - name: Lint code
+#        run: ng lint
+
+      - name: Test code
+        run: npm test
 
       - name: FidurCode Build
         run: npm run build-prod

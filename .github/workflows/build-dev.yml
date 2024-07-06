@@ -68,9 +68,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.9.0
+#      @TODO - Po testach usunac instalacje zaleznosci.
+      - name: Install dependencies
+        run: npm i --legacy-peer-deps
 
       - name: Test code
-        run: npm run test
+        run: npm test
 
   build:
     runs-on: ubuntu-latest
